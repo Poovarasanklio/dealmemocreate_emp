@@ -1,0 +1,187 @@
+
+<div class="Content-div">
+  @if(showAlert) {
+    <fuse-alert
+        class="mt-8"
+        [type]="alert.type"
+        [appearance]="'fill'"
+        [dismissible]="true"
+        [dismissed]="false"
+    >
+        {{ alert.message }}
+    </fuse-alert>
+  }
+  <div class="flex justify-between items-center ">
+    <b>
+      <h1 class="text-lg p-5 pl-6">List of Employee</h1>
+    </b>
+    <button mat-flat-button color="primary" (click)="openForm()">Add Employee</button>
+  </div>
+  <div>
+    <mat-form-field class="mx-6 flex flex-auto rounded-2xl">
+      <mat-label>Search by Name</mat-label>
+      <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:magnifying-glass-plus'" matPrefix></mat-icon>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Jack" #input>
+    </mat-form-field>
+
+    <div
+      class="mat-elevation-z8 mx-6 overflow-x-auto bg-card flex flex-auto flex-col overflow-hidden rounded-2xl shadow xl:col-span-2">
+      <table mat-table [dataSource]="dataSource" matSort>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+        </ng-container>
+
+        <!-- Address Column -->
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Address</th>
+          <td mat-cell *matCellDef="let row"> {{row.address}} </td>
+        </ng-container>
+
+        <!-- Mobile Column -->
+        <ng-container matColumnDef="mobile_number">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Mobile</th>
+          <td mat-cell *matCellDef="let row"> {{row.mobile_number}} </td>
+        </ng-container>
+
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+          <td mat-cell *matCellDef="let row"> {{row.email}} </td>
+        </ng-container>
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>Action</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button (click)="openEditEmployee(row)">
+              <mat-icon svgIcon="heroicons_solid:pencil" class="custom-edit-icon"></mat-icon>
+            </button>
+            <button mat-icon-button (click)="deleteEmployee(row)">
+              <mat-icon svgIcon="heroicons_solid:trash" class="custom-delete-icon"></mat-icon>
+            </button>
+            <button (click)="resetPassword(row)" class="ml-4" mat-flat-button name="resetpassword" color="primary">
+              ResetPassword
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Header and Row Definitions -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <!-- Loading Indicator -->
+        <!-- <trclass=" ">
+          <td colspan="4" class="mat-cell"> 
+            <mat-spinner></mat-spinner>   Replace with your loading spinner or message 
+          </td>
+        </tr>  -->
+        <!-- No Data Row -->
+        <tr class="mat-row"  class="flex justify-center items-center h-14">
+          <td class="mat-cell" colspan="4">No data matching the filter <span class="text-red-600/100">"{{ input.value
+              }}"</span></td>
+        </tr>
+        <!-- <tr class="mat-row"  *ngIf="loading"   class="flex justify-center items-center h-14">
+          <td class="mat-cell" colspan="4">  Loading data .. </td>
+        </tr> -->
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+    </div>
+  </div>
+
+
+  
+  <div class="mt-10 0 w-full out-bgcolor" *ngIf="getConfirm">
+    <!-- Alert -->
+    
+      <b>
+        <h1 class="text-lg p-5">Create Employee</h1>
+      </b>
+    
+    <form [formGroup]="newEmployeeForm" (ngSubmit)="saveForm()">
+      <div class="mt-8 grid grid-col-6">
+        <!-- Name Field -->
+        <div class="mb-5">
+          <mat-form-field class="w-full">
+            <mat-label>Name</mat-label>
+            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:user'" matPrefix></mat-icon>
+            <input #nameInput formControlName="name" matInput type="text" />
+            <mat-error class="ml-7" *ngIf="newEmployeeForm.get('name').hasError('backendError')">{{ fieldErrors.name
+              }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Mobile Field -->
+        <div class="mb-5">
+          <mat-form-field class="w-full">
+            <mat-label>Mobile</mat-label>
+            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:phone'" matPrefix></mat-icon>
+            <input #mobile_numberInput formControlName="mobile_number" matInput type="text" />
+            <mat-error class="ml-7" *ngIf="newEmployeeForm.get('mobile_number').hasError('backendError')">{{
+              fieldErrors.mobile_number }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Email Field -->
+        <div class="mb-5">
+          <mat-form-field class="w-full">
+            <mat-label>Email</mat-label>
+            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:envelope'" matPrefix></mat-icon>
+            <input #emailInput formControlName="email" matInput type="email" />
+            <mat-error class="ml-7" *ngIf="newEmployeeForm.get('email').hasError('backendError')">{{ fieldErrors.email
+              }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Address Field -->
+        <div class="mb-5">
+          <mat-form-field class="w-full">
+            <mat-label>Address</mat-label>
+            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:home'" matPrefix></mat-icon>
+            <textarea #addressInput formControlName="address" matInput cdkTextareaAutosize
+              [cdkAutosizeMinRows]="3"></textarea>
+            <mat-error class="ml-7" *ngIf="newEmployeeForm.get('address').hasError('backendError')">{{
+              fieldErrors.address }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Role Field -->
+        <div class="mb-5">
+          <mat-form-field class="w-full">
+            <mat-label>Role</mat-label>
+            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:users'" matPrefix></mat-icon>
+            <mat-select #roleidInput formControlName="role_id" placeholder="Select Role">
+              <mat-option *ngFor="let role of roles" [value]="role">{{ role }}</mat-option>
+            </mat-select>
+            <mat-error class="ml-7" *ngIf="newEmployeeForm.get('role_id').hasError('backendError')">{{
+              fieldErrors.role_id }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="flex items-center justify-end">
+          <button mat-flat-button type="button" color="warn" (click)="resetForm()">Clear</button>
+          <button class="ml-4" mat-flat-button type="submit" color="primary">{{ selectedEmployee ? 'Update' : 'Invite'
+            }}</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+
+
+
+<!-- <div >
+  <h2 mat-dialog-title>Delete file</h2>
+<mat-dialog-content>
+  Would you like to delete cat.jpeg?
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>No</button>
+  <button mat-button mat-dialog-close cdkFocusInitial>Ok</button>
+</mat-dialog-actions>
+</div> -->

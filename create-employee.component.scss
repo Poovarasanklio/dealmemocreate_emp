@@ -1,0 +1,60 @@
+ .txtdec{
+    color: teal;
+    padding: 4px;
+    cursor: pointer;
+    &:hover{
+        text-decoration: underline;
+    }
+     
+}
+
+.out-bgcolor{
+    border:2px solid rgb(230, 230, 230);
+    background: rgb(253, 253, 253);
+    border-radius: 3px;
+    padding: 20px 40px;
+    height: auto;
+    margin:auto  ;
+    width:100%;
+
+
+}
+.Content-div{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+
+}
+
+.text-align-right {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+.inputwid{
+    width: 78vw;
+}
+
+
+/* create-employee.component.scss */
+
+.custom-edit-icon {
+    color: #007bff; /* Custom color for edit */
+  }
+  
+  .custom-delete-icon {
+    color: #dc3545; /* Custom color for delete */
+  }
+  
+  .custom-reset-icon {
+    color: #ffc107; /* Custom color for reset */
+  }
+  
+
+
+@media (min-width:550px){
+    .out-bgcolor{
+        width:45% !important;
+    }
+}
